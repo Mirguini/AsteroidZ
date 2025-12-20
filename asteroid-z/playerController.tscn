@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://cynh7cmdhlbri"]
+
+[ext_resource type="Script" uid="uid://cu7aa85jadpi3" path="res://playerController.gd" id="1_8nycb"]
+[ext_resource type="Texture2D" uid="uid://u7im126gtey" path="res://nau.webp" id="2_w25kc"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+position = Vector2(-1, 21)
+script = ExtResource("1_8nycb")
+
+[node name="Nau" type="Sprite2D" parent="CharacterBody2D"]
+texture = ExtResource("2_w25kc")
