@@ -6,7 +6,7 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_n00aa"]
 radius = 53.65
 
-[node name="Asteroid" type="CharacterBody2D"]
+[node name="Asteroid" type="CharacterBody2D" groups=["asteroids"]]
 script = ExtResource("1_n00aa")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
