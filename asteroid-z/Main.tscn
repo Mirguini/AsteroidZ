@@ -1,32 +1,22 @@
-[gd_scene load_steps=6 format=3 uid="uid://cynh7cmdhlbri"]
+[gd_scene load_steps=5 format=3 uid="uid://cynh7cmdhlbri"]
 
-[ext_resource type="Script" uid="uid://dcuiowus0yb5w" path="res://Player/AsteroidSpawner.gd" id="1_i6w0m"]
-[ext_resource type="Script" uid="uid://cu7aa85jadpi3" path="res://Player/playerController.gd" id="2_qphhv"]
-[ext_resource type="PackedScene" uid="uid://ba4t4nc0diy76" path="res://Asteroid.tscn" id="2_spgtu"]
-[ext_resource type="Texture2D" uid="uid://u7im126gtey" path="res://Player/nau.webp" id="3_spgtu"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_qphhv"]
-size = Vector2(99, 65)
+[ext_resource type="Script" uid="uid://dcuiowus0yb5w" path="res://AsteroidSpawner/AsteroidSpawner.gd" id="1_cm0pq"]
+[ext_resource type="Script" uid="uid://dhexchyqwh5a2" path="res://Player/playerSpawner.gd" id="1_r0du0"]
+[ext_resource type="PackedScene" uid="uid://ba4t4nc0diy76" path="res://Asteroid.tscn" id="2_fos0i"]
+[ext_resource type="PackedScene" uid="uid://t2d37sioy1wh" path="res://Player/Player.tscn" id="4_cm0pq"]
 
 [node name="MainScene" type="Node2D"]
+script = ExtResource("1_r0du0")
 
 [node name="AsteroidSpawner" type="Node2D" parent="."]
 position = Vector2(-1, 21)
-script = ExtResource("1_i6w0m")
-asteroidObject = ExtResource("2_spgtu")
+script = ExtResource("1_cm0pq")
+asteroidObject = ExtResource("2_fos0i")
+
+[node name="Node2D" type="Node2D" parent="."]
+position = Vector2(-1, 21)
+script = ExtResource("1_r0du0")
+player_scene = ExtResource("4_cm0pq")
 
 [node name="Asteroids" type="Node2D" parent="."]
 position = Vector2(-1, 21)
-
-[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
-position = Vector2(-1, 21)
-script = ExtResource("2_qphhv")
-
-[node name="Nau" type="Sprite2D" parent="CharacterBody2D"]
-position = Vector2(7, -25)
-scale = Vector2(0.30078125, 0.30078125)
-texture = ExtResource("3_spgtu")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
-position = Vector2(5, -26)
-shape = SubResource("RectangleShape2D_qphhv")
