@@ -2,6 +2,8 @@ extends CharacterBody2D
 
 @export var speed := 600.0
 
+func _ready():
+	global_position = get_viewport_rect().size / 2
 
 func _process(delta: float) -> void:
 	var input_vector = Vector2.ZERO
