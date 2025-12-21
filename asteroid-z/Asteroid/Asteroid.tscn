@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://ba4t4nc0diy76"]
 
 [ext_resource type="Texture2D" uid="uid://ov3q6cjl5y06" path="res://AsteroidSpawner/asteroid.png" id="1_l7pm1"]
-[ext_resource type="Script" uid="uid://b1cg0kvg0qync" path="res://asteroid.gd" id="1_n00aa"]
+[ext_resource type="Script" uid="uid://b1cg0kvg0qync" path="res://Asteroid/asteroid.gd" id="1_n00aa"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_n00aa"]
 radius = 53.65
