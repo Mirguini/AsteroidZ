@@ -1,8 +1,11 @@
-[gd_scene format=3 uid="uid://qb434a0p45f5"]
+[gd_scene load_steps=2 format=3 uid="uid://qb434a0p45f5"]
+
+[ext_resource type="Script" uid="uid://tr1lj8am8i3o" path="res://PauseMenu.gd" id="1_nov15"]
 
 [node name="CanvasLayer" type="Node2D"]
 process_mode = 2
 visible = false
+script = ExtResource("1_nov15")
 
 [node name="Root" type="Control" parent="."]
 layout_mode = 3
