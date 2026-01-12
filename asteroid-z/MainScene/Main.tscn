@@ -1,11 +1,13 @@
-[gd_scene load_steps=7 format=3 uid="uid://cynh7cmdhlbri"]
+[gd_scene load_steps=9 format=3 uid="uid://cynh7cmdhlbri"]
 
 [ext_resource type="Script" uid="uid://dhexchyqwh5a2" path="res://Player/playerSpawner.gd" id="1_6646i"]
 [ext_resource type="Script" uid="uid://dcuiowus0yb5w" path="res://AsteroidSpawner/AsteroidSpawner.gd" id="2_wuaen"]
 [ext_resource type="PackedScene" uid="uid://ba4t4nc0diy76" path="res://Asteroid/Asteroid.tscn" id="3_qt16b"]
 [ext_resource type="PackedScene" uid="uid://t2d37sioy1wh" path="res://Player/Player.tscn" id="4_3dbgo"]
-[ext_resource type="Script" uid="uid://caxvwlww7aapp" path="res://MainScene/ScoreManager.gd" id="5_wuaen"]
+[ext_resource type="Script" uid="uid://caxvwlww7aapp" path="res://ScoreManager.gd" id="5_wuaen"]
 [ext_resource type="Script" uid="uid://bji2r7r5g3u7t" path="res://MainScene/DamageFlash.gd" id="6_qt16b"]
+[ext_resource type="Script" uid="uid://b8in2y54ytd7h" path="res://MainScene/PauseController.gd" id="7_3dbgo"]
+[ext_resource type="PackedScene" uid="uid://qb434a0p45f5" path="res://PauseMenu.tscn" id="8_8xi1u"]
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_6646i")
@@ -43,3 +45,9 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(1.2700006, 0, 0, 0)
 script = ExtResource("6_qt16b")
+
+[node name="PauseController" type="Node" parent="."]
+script = ExtResource("7_3dbgo")
+pause_menu_path = NodePath("../PauseMenu")
+
+[node name="PauseMenu" parent="." instance=ExtResource("8_8xi1u")]
