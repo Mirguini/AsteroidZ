@@ -8,6 +8,7 @@ radius = 53.65
 
 [node name="Asteroid" type="CharacterBody2D" groups=["asteroids"]]
 script = ExtResource("1_n00aa")
+asteroid_scene = null
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_n00aa")

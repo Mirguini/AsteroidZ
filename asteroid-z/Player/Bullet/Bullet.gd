@@ -12,13 +12,10 @@ func _ready() -> void:
 	await get_tree().create_timer(lifetime).timeout
 	queue_free()
 
-
 func _physics_process(delta: float) -> void:
-	# Moviment
 	global_position += direction.normalized() * speed * delta
 
-
 func _on_body_entered(body: Node2D) -> void:
-	if body.is_in_group("asteroids"):
-		body.queue_free()
-		queue_free()     
+	if body.has_method("destroy"):
+		body.destroy()
+		queue_free()
