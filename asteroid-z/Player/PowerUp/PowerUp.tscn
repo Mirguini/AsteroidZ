@@ -1,0 +1,29 @@
+[gd_scene load_steps=9 format=3 uid="uid://b7q5iqilac3wa"]
+
+[ext_resource type="Script" uid="uid://drncylhnp0cq" path="res://Player/PowerUp/PowerUp.gd" id="1_8f4tg"]
+[ext_resource type="Texture2D" uid="uid://cxw8tofr1xm12" path="res://Player/PowerUp/x2.png" id="2_r14kw"]
+[ext_resource type="Texture2D" uid="uid://ccwr0hnyqy2nu" path="res://Player/PowerUp/rapidfire.png" id="3_khwlr"]
+[ext_resource type="Script" uid="uid://hyqh4go0cli5" path="res://Player/PowerUp/PowerUpCatalog.gd" id="4_7bjvx"]
+[ext_resource type="Texture2D" uid="uid://ynmgcfelxve0" path="res://Player/PowerUp/shield.png" id="5_xa6yl"]
+[ext_resource type="Texture2D" uid="uid://cptk2gtdscwhr" path="res://Player/PowerUp/tripleShot.png" id="6_uaqug"]
+
+[sub_resource type="Resource" id="Resource_nypbh"]
+script = ExtResource("4_7bjvx")
+triple_shot_sprite = ExtResource("6_uaqug")
+rapid_fire_sprite = ExtResource("3_khwlr")
+double_damage_sprite = ExtResource("2_r14kw")
+shield_sprite = ExtResource("5_xa6yl")
+metadata/_custom_type_script = "uid://hyqh4go0cli5"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8f4tg"]
+
+[node name="PowerUp" type="Area2D"]
+script = ExtResource("1_8f4tg")
+lifetime = 5.0
+catalog = SubResource("Resource_nypbh")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.15, 0.15)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_8f4tg")

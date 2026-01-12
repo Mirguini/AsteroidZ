@@ -1,8 +1,29 @@
-[gd_scene load_steps=6 format=3 uid="uid://ba4t4nc0diy76"]
+[gd_scene load_steps=12 format=3 uid="uid://ba4t4nc0diy76"]
 
 [ext_resource type="Texture2D" uid="uid://ov3q6cjl5y06" path="res://AsteroidSpawner/asteroid.png" id="1_l7pm1"]
 [ext_resource type="Script" uid="uid://b1cg0kvg0qync" path="res://Asteroid/asteroid.gd" id="1_n00aa"]
 [ext_resource type="PackedScene" uid="uid://dwhi1kbnxjkc1" path="res://AsteroidSpawner/ExplosionSfx.tscn" id="2_gfnam"]
+[ext_resource type="PackedScene" uid="uid://b7q5iqilac3wa" path="res://Player/PowerUp/PowerUp.tscn" id="3_rwnqa"]
+[ext_resource type="Script" uid="uid://dsp66onsvf25y" path="res://Player/PowerUp/PowerUpDrop.gd" id="4_o52gv"]
+
+[sub_resource type="Resource" id="Resource_657bh"]
+script = ExtResource("4_o52gv")
+metadata/_custom_type_script = "uid://dsp66onsvf25y"
+
+[sub_resource type="Resource" id="Resource_2puft"]
+script = ExtResource("4_o52gv")
+type = 1
+metadata/_custom_type_script = "uid://dsp66onsvf25y"
+
+[sub_resource type="Resource" id="Resource_0ac6u"]
+script = ExtResource("4_o52gv")
+type = 2
+metadata/_custom_type_script = "uid://dsp66onsvf25y"
+
+[sub_resource type="Resource" id="Resource_7lqgo"]
+script = ExtResource("4_o52gv")
+type = 3
+metadata/_custom_type_script = "uid://dsp66onsvf25y"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_n00aa"]
 radius = 53.65
@@ -13,6 +34,9 @@ radius = 63.03174
 [node name="Asteroid" type="CharacterBody2D" groups=["asteroids"]]
 script = ExtResource("1_n00aa")
 explosion_sfx_scene = ExtResource("2_gfnam")
+powerup_scene = ExtResource("3_rwnqa")
+powerup_drop_chance = 0.1
+powerup_drops = Array[ExtResource("4_o52gv")]([SubResource("Resource_657bh"), SubResource("Resource_2puft"), SubResource("Resource_0ac6u"), SubResource("Resource_7lqgo")])
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_n00aa")

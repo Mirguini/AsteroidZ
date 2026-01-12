@@ -13,6 +13,13 @@ func _ready() -> void:
 	add_to_group("score_manager")
 
 func add_points(value: int) -> void:
-	score += value
+	var mult := 1
+
+	var player := get_tree().get_first_node_in_group("player")
+	if player != null and "score_multiplier" in player:
+		mult = int(player.score_multiplier)
+
+	score += value * mult
+
 	if label != null:
 		label.text = "Puntuació: %d" % score

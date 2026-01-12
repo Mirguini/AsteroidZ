@@ -13,6 +13,9 @@ signal destroyed(points: int)
 @export var split_angle_spread: float = 0.6
 @export var spawn_separation: float = 10.0
 @export var explosion_sfx_scene: PackedScene
+@export var powerup_scene: PackedScene
+@export_range(0.0, 1.0, 0.01) var powerup_drop_chance := 1.0
+@export var powerup_drops: Array[PowerUpDrop] = []
 
 @export var asteroid_bounce_cd := 0.08
 @export var bounce_separation := 2.0
@@ -29,6 +32,11 @@ func _ready() -> void:
 	rotation = _rng.randf_range(0.0, TAU)
 	rotation_speed *= _rng.randf_range(0.6, 1.4)
 	speed *= _rng.randf_range(0.85, 1.15)
+
+	var sm := get_tree().get_first_node_in_group("score_manager")
+	if sm != null and sm.has_method("add_points"):
+		destroyed.connect(sm.add_points)
+
 
 func set_direction(dir: Vector2) -> void:
 	if dir.length() > 0.001:
@@ -81,6 +89,10 @@ func destroy() -> void:
 	call_deferred("_destroy_deferred")
 
 func _destroy_deferred() -> void:
+	print("DESTROY asteroid | can_split=", can_split,
+		" powerup_scene=", powerup_scene,
+		" drops=", powerup_drops.size(),
+		" chance=", powerup_drop_chance)
 	emit_signal("destroyed", score_value)
 
 	if explosion_sfx_scene != null:
@@ -88,10 +100,14 @@ func _destroy_deferred() -> void:
 		get_parent().add_child(sfx)
 		sfx.global_position = global_position
 
+	if not can_split:
+		_try_drop_powerup()
+
 	if can_split:
 		_split_into_two()
 
 	queue_free()
+
 
 func bounce_from(normal: Vector2) -> void:
 	if _bounce_timer > 0.0:
@@ -126,6 +142,9 @@ func _split_into_two() -> void:
 		child.set_deferred("global_position", global_position + dirs[i] * spawn_separation)
 		child.set_deferred("scale", scale * child_scale)
 		child.set_deferred("can_split", false)
+		child.set_deferred("powerup_scene", powerup_scene)
+		child.set_deferred("powerup_drop_chance", powerup_drop_chance)
+		child.set_deferred("powerup_drops", powerup_drops)
 		child.set_deferred("speed", speed * child_speed_multiplier)
 		child.set_deferred("score_value", int(score_value * 0.5))
 
@@ -138,3 +157,34 @@ func _on_hitbox_body_entered(body: Node2D) -> void:
 	if body.has_method("take_hit"):
 		body.call_deferred("take_hit")
 		set_direction((global_position - body.global_position).normalized())
+		
+func _try_drop_powerup() -> void:
+	if powerup_scene == null:
+		return
+	if powerup_drops.is_empty():
+		return
+
+	if _rng.randf() > powerup_drop_chance:
+		return
+
+	var total := 0.0
+	for d in powerup_drops:
+		total += max(0.0, d.weight)
+	if total <= 0.0:
+		return
+
+	var r := _rng.randf() * total
+	var chosen: PowerUpDrop = powerup_drops[0]
+	for d in powerup_drops:
+		r -= max(0.0, d.weight)
+		if r <= 0.0:
+			chosen = d
+			break
+
+	# Instanciar i configurar powerup
+	var p := powerup_scene.instantiate() as Node2D
+	p.global_position = global_position
+	get_parent().add_child(p)
+
+	if p is PowerUp:
+		(p as PowerUp).setup(chosen.type, chosen.duration)

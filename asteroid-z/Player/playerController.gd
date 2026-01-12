@@ -1,20 +1,31 @@
 extends CharacterBody2D
 
 @onready var shoot_sfx: AudioStreamPlayer2D = $ShootSfx
+@onready var pickup_sfx: AudioStreamPlayer2D = $PickupSfx
+
+@onready var shield_sprite: Sprite2D = $ShieldSprite
 
 @export var speed := 600.0
 @export var hit_cd := 0.35
-
-var _can_take_hit := true
-
-var aimDir := Vector2.RIGHT
-
 @export var bullet: PackedScene
 @export var fireCd: float = 0.15
 @onready var muzzle: Marker2D = $Muzzle
+@export var triple_spread_deg := 12.0
+
+var active_powerups: Dictionary = {}
+# type -> SceneTreeTimer
+var score_multiplier := 1
+
+var _can_take_hit := true
+var aimDir := Vector2.RIGHT
 var canShoot := true
 
-func _process(delta: float) -> void:
+func _ready() -> void:
+	if shield_sprite != null:
+		shield_sprite.visible = false
+
+
+func _physics_process(delta: float) -> void:
 	var input_vector = Vector2.ZERO
 	input_vector.x = Input.get_action_strength("moveRight") - Input.get_action_strength("moveLeft")
 	input_vector.y = Input.get_action_strength("moveDown") - Input.get_action_strength("moveUp")
@@ -29,6 +40,7 @@ func _process(delta: float) -> void:
 
 	if Input.is_action_pressed("Shoot"):
 		tryShoot()
+
 
 func _snap_to_cardinal(v: Vector2) -> Vector2:
 	if abs(v.x) > abs(v.y):
@@ -59,6 +71,15 @@ func tryShoot() -> void:
 		shoot_sfx.stop()
 		shoot_sfx.play()
 
+	if has_powerup(PowerUpTypes.Type.TRIPLE_SHOT):
+		_shoot_triple()
+	else:
+		_shoot_single()
+
+	await get_tree().create_timer(fireCd).timeout
+	canShoot = true
+
+func _shoot_single() -> void:
 	var b = bullet.instantiate()
 	b.global_position = muzzle.global_position
 
@@ -67,10 +88,31 @@ func tryShoot() -> void:
 
 	get_parent().add_child(b)
 
-	await get_tree().create_timer(fireCd).timeout
-	canShoot = true
-	
+
+func _shoot_triple() -> void:
+	var spread := deg_to_rad(triple_spread_deg)
+
+	_spawn_bullet(aimDir.rotated(-spread))
+	_spawn_bullet(aimDir)
+	_spawn_bullet(aimDir.rotated(spread))
+
+func _spawn_bullet(dir: Vector2) -> void:
+	var b = bullet.instantiate()
+	b.global_position = muzzle.global_position
+
+	if "direction" in b:
+		b.direction = dir.normalized()
+
+	get_parent().add_child(b)
+
 func take_hit() -> void:
+	if has_powerup(PowerUpTypes.Type.SHIELD):
+		active_powerups.erase(PowerUpTypes.Type.SHIELD)
+
+		if shield_sprite != null:
+			shield_sprite.visible = false
+		return
+
 	if not _can_take_hit:
 		return
 
@@ -94,3 +136,36 @@ func take_hit() -> void:
 		sprite.modulate.a = 1.0
 
 	_can_take_hit = true
+
+	
+func add_powerup(type: PowerUpTypes.Type, duration: float) -> void:
+	if pickup_sfx != null:
+		pickup_sfx.stop()
+		pickup_sfx.play()
+
+	if type == PowerUpTypes.Type.SHIELD and shield_sprite != null:
+		shield_sprite.visible = true
+
+	# ✖️2 SCORE
+	if type == PowerUpTypes.Type.DOUBLE_DAMAGE:
+		score_multiplier = 2
+
+	var t := get_tree().create_timer(duration)
+	active_powerups[type] = t
+
+	t.timeout.connect(func():
+		if active_powerups.get(type) == t:
+			active_powerups.erase(type)
+
+			if type == PowerUpTypes.Type.SHIELD and shield_sprite != null:
+				shield_sprite.visible = false
+
+			if type == PowerUpTypes.Type.DOUBLE_DAMAGE:
+				score_multiplier = 1
+	)
+
+
+
+
+func has_powerup(type: PowerUpTypes.Type) -> bool:
+	return active_powerups.has(type)
