@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://cynh7cmdhlbri"]
+
+[ext_resource type="Script" uid="uid://dhexchyqwh5a2" path="res://Player/playerSpawner.gd" id="1_6646i"]
+[ext_resource type="Script" uid="uid://dcuiowus0yb5w" path="res://AsteroidSpawner/AsteroidSpawner.gd" id="2_wuaen"]
+[ext_resource type="PackedScene" uid="uid://ba4t4nc0diy76" path="res://Asteroid/Asteroid.tscn" id="3_qt16b"]
+[ext_resource type="PackedScene" uid="uid://t2d37sioy1wh" path="res://Player/Player.tscn" id="4_3dbgo"]
+[ext_resource type="Script" uid="uid://caxvwlww7aapp" path="res://MainScene/ScoreManager.gd" id="5_wuaen"]
+
+[node name="MainScene" type="Node2D"]
+script = ExtResource("1_6646i")
+
+[node name="AsteroidSpawner" type="Node2D" parent="."]
+position = Vector2(-1, 21)
+script = ExtResource("2_wuaen")
+asteroidObject = ExtResource("3_qt16b")
+
+[node name="PlayerSpawner" type="Node2D" parent="."]
+position = Vector2(-1, 21)
+script = ExtResource("1_6646i")
+player_scene = ExtResource("4_3dbgo")
+
+[node name="Asteroids" type="Node2D" parent="."]
+position = Vector2(-1, 21)
+
+[node name="ScoreManager" type="Node" parent="." groups=["score_manager"]]
+script = ExtResource("5_wuaen")
+label_path = NodePath("../CanvasLayer/Label")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+offset_left = 21.0
+offset_top = 23.0
+offset_right = 173.0
+offset_bottom = 100.0

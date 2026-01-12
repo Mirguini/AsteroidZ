@@ -1,4 +1,7 @@
 extends CharacterBody2D
+signal destroyed(points: int)
+
+@export var score_value: int = 100
 
 @export var speed: float = 200.0
 @export var rotation_speed: float = 2.5
@@ -36,9 +39,15 @@ func _process(_delta: float) -> void:
 		queue_free()
 
 func destroy() -> void:
+	call_deferred("_destroy_deferred")
+
+func _destroy_deferred() -> void:
+	emit_signal("destroyed", score_value)
 	if can_split:
 		_split_into_two()
 	queue_free()
+
+
 
 func _split_into_two() -> void:
 	if asteroid_scene == null:
@@ -59,12 +68,14 @@ func _split_into_two() -> void:
 
 	for i in 2:
 		var child := asteroid_scene.instantiate()
-		get_parent().add_child(child)
-		child.global_position = global_position + dirs[i] * spawn_separation
-		child.scale = scale * child_scale
-		child.set("can_split", false)
-		child.set("speed", speed * child_speed_multiplier)
+		get_parent().call_deferred("add_child", child)
+		child.set_deferred("global_position", global_position + dirs[i] * spawn_separation)
+		child.set_deferred("scale", scale * child_scale)
+		child.set_deferred("can_split", false)
+		child.set_deferred("speed", speed * child_speed_multiplier)
+		child.set_deferred("score_value", int(score_value * 0.5))
+
 		if child.has_method("set_direction"):
-			child.call("set_direction", dirs[i])
+			child.call_deferred("set_direction", dirs[i])
 		else:
-			child.set("direction", dirs[i])
+			child.set_deferred("direction", dirs[i])

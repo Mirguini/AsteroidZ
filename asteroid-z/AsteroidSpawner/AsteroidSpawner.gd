@@ -41,6 +41,11 @@ func spawnAsteroid() -> void:
 	var asteroid := asteroidObject.instantiate()
 	asteroid.global_position = pos
 	asteroid.set("asteroid_scene", asteroidObject)
+	
+	var score_manager := get_tree().get_first_node_in_group("score_manager")
+	if score_manager != null:
+		asteroid.connect("destroyed", Callable(score_manager, "add_points"))
+
 
 
 	var center := viewportSize * 0.5
