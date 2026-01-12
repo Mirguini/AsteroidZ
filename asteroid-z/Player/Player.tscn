@@ -5,8 +5,13 @@
 [ext_resource type="Texture2D" uid="uid://u7im126gtey" path="res://Player/nau.webp" id="2_tok1r"]
 [ext_resource type="AudioStream" uid="uid://csecji2ub10p5" path="res://Player/Bullet/laserShoot.wav" id="4_ddoul"]
 [ext_resource type="Script" uid="uid://b2rk057j3hedh" path="res://Player/CameraShake.gd" id="5_8g4oa"]
-[ext_resource type="AudioStream" uid="uid://c25n1go0lsxab" path="res://Player/PowerUp/powerUp.wav" id="6_6ysni"]
-[ext_resource type="Texture2D" uid="uid://bjs8jhmrbdyb7" path="res://Player/PowerUp/topShield.png" id="7_vlldt"]
+
+# Pickup + Shield (abans a HEAD)
+[ext_resource type="AudioStream" uid="uid://c25n1go0lsxab" path="res://Player/PowerUp/powerUp.wav" id="6_pickup"]
+[ext_resource type="Texture2D" uid="uid://bjs8jhmrbdyb7" path="res://Player/PowerUp/topShield.png" id="7_shield"]
+
+# Die Sfx (abans a Ferran)
+[ext_resource type="AudioStream" uid="uid://fdtmbxkd2mrd" path="res://Player/medium-explosion-40472.wav" id="8_die"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ddoul"]
 size = Vector2(92, 39)
@@ -40,10 +45,13 @@ stream = ExtResource("4_ddoul")
 script = ExtResource("5_8g4oa")
 
 [node name="PickupSfx" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("6_6ysni")
+stream = ExtResource("6_pickup")
 
 [node name="ShieldSprite" type="Sprite2D" parent="."]
 visible = false
 z_index = 5
 scale = Vector2(0.2, 0.2)
-texture = ExtResource("7_vlldt")
+texture = ExtResource("7_shield")
+
+[node name="DieSfx" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("8_die")

@@ -6,33 +6,32 @@ signal died
 @export var max_health: int = 5
 var health: int
 
-@onready var shoot_sfx: AudioStreamPlayer2D = $ShootSfx
-@onready var pickup_sfx: AudioStreamPlayer2D = $PickupSfx
-
-@onready var shield_sprite: Sprite2D = $ShieldSprite
-
 @export var speed := 600.0
 @export var hit_cd := 0.35
 @export var bullet: PackedScene
 @export var fireCd: float = 0.15
-@onready var muzzle: Marker2D = $Muzzle
 @export var triple_spread_deg := 12.0
 
 var active_powerups: Dictionary = {}
 # type -> SceneTreeTimer
 var score_multiplier := 1
 
+@onready var muzzle: Marker2D = $Muzzle
+@onready var shoot_sfx: AudioStreamPlayer2D = $ShootSfx
+@onready var die_sfx: AudioStreamPlayer2D = $DieSfx
+@onready var pickup_sfx: AudioStreamPlayer2D = $PickupSfx
+@onready var shield_sprite: Sprite2D = $ShieldSprite
+
 var _can_take_hit := true
 var aimDir := Vector2.RIGHT
-
 var canShoot := true
-
 
 
 func _ready() -> void:
 	add_to_group("player")
 	health = max_health
 	emit_signal("health_changed", health, max_health)
+
 	if shield_sprite != null:
 		shield_sprite.visible = false
 
@@ -93,6 +92,7 @@ func tryShoot() -> void:
 	await get_tree().create_timer(fireCd).timeout
 	canShoot = true
 
+
 func _shoot_single() -> void:
 	var b = bullet.instantiate()
 	b.global_position = muzzle.global_position
@@ -104,10 +104,10 @@ func _shoot_single() -> void:
 
 func _shoot_triple() -> void:
 	var spread := deg_to_rad(triple_spread_deg)
-
 	_spawn_bullet(aimDir.rotated(-spread))
 	_spawn_bullet(aimDir)
 	_spawn_bullet(aimDir.rotated(spread))
+
 
 func _spawn_bullet(dir: Vector2) -> void:
 	var b = bullet.instantiate()
@@ -117,8 +117,6 @@ func _spawn_bullet(dir: Vector2) -> void:
 		b.direction = dir.normalized()
 
 	get_parent().add_child(b)
-	await get_tree().create_timer(fireCd).timeout
-	canShoot = true
 
 
 func take_hit() -> void:
@@ -138,13 +136,19 @@ func take_hit() -> void:
 	health = max(0, health - 1)
 	emit_signal("health_changed", health, max_health)
 
-	# Si muere, reinicia (o aquí puedes poner Game Over)
+	# Si muere, suena y reinicia
 	if health <= 0:
 		emit_signal("died")
-		get_tree().reload_current_scene()
+
+		if die_sfx != null:
+			die_sfx.play()
+			# Si finished te da problemas, dímelo y lo cambiamos por un Timer.
+			await die_sfx.finished
+
+		get_tree().call_deferred("reload_current_scene")
 		return
 
-	# Efectos de daño (lo que ya tenías)
+	# Efectos de daño
 	var flash := get_tree().get_first_node_in_group("damage_flash")
 	if flash != null:
 		flash.call("flash")
@@ -164,7 +168,7 @@ func take_hit() -> void:
 
 	_can_take_hit = true
 
-	
+
 func add_powerup(type: PowerUpTypes.Type, duration: float) -> void:
 	if pickup_sfx != null:
 		pickup_sfx.stop()
@@ -190,8 +194,6 @@ func add_powerup(type: PowerUpTypes.Type, duration: float) -> void:
 			if type == PowerUpTypes.Type.DOUBLE_DAMAGE:
 				score_multiplier = 1
 	)
-
-
 
 
 func has_powerup(type: PowerUpTypes.Type) -> bool:
