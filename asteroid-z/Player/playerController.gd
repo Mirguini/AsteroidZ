@@ -1,18 +1,30 @@
 extends CharacterBody2D
 
+signal health_changed(current: int, max: int)
+signal died
+
+@export var max_health: int = 5
+var health: int
+
 @onready var shoot_sfx: AudioStreamPlayer2D = $ShootSfx
+@onready var muzzle: Marker2D = $Muzzle
 
 @export var speed := 600.0
 @export var hit_cd := 0.35
 
-var _can_take_hit := true
-
-var aimDir := Vector2.RIGHT
-
 @export var bullet: PackedScene
 @export var fireCd: float = 0.15
-@onready var muzzle: Marker2D = $Muzzle
+
+var _can_take_hit := true
 var canShoot := true
+var aimDir := Vector2.RIGHT
+
+
+func _ready() -> void:
+	add_to_group("player")
+	health = max_health
+	emit_signal("health_changed", health, max_health)
+
 
 func _process(delta: float) -> void:
 	var input_vector = Vector2.ZERO
@@ -30,11 +42,13 @@ func _process(delta: float) -> void:
 	if Input.is_action_pressed("Shoot"):
 		tryShoot()
 
+
 func _snap_to_cardinal(v: Vector2) -> Vector2:
 	if abs(v.x) > abs(v.y):
 		return Vector2.RIGHT if v.x > 0.0 else Vector2.LEFT
 	else:
 		return Vector2.DOWN if v.y > 0.0 else Vector2.UP
+
 
 func _apply_rotation_from_aim(dir: Vector2) -> void:
 	if dir == Vector2.RIGHT:
@@ -45,6 +59,7 @@ func _apply_rotation_from_aim(dir: Vector2) -> void:
 		rotation = 0.0
 	else:
 		rotation = deg_to_rad(180)
+
 
 func tryShoot() -> void:
 	if not canShoot:
@@ -61,7 +76,6 @@ func tryShoot() -> void:
 
 	var b = bullet.instantiate()
 	b.global_position = muzzle.global_position
-
 	if "direction" in b:
 		b.direction = aimDir
 
@@ -69,13 +83,25 @@ func tryShoot() -> void:
 
 	await get_tree().create_timer(fireCd).timeout
 	canShoot = true
-	
+
+
 func take_hit() -> void:
 	if not _can_take_hit:
 		return
 
 	_can_take_hit = false
 
+	# Restar vida y avisar al HUD
+	health = max(0, health - 1)
+	emit_signal("health_changed", health, max_health)
+
+	# Si muere, reinicia (o aquí puedes poner Game Over)
+	if health <= 0:
+		emit_signal("died")
+		get_tree().reload_current_scene()
+		return
+
+	# Efectos de daño (lo que ya tenías)
 	var flash := get_tree().get_first_node_in_group("damage_flash")
 	if flash != null:
 		flash.call("flash")

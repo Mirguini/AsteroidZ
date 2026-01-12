@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cynh7cmdhlbri"]
+[gd_scene load_steps=11 format=3 uid="uid://cynh7cmdhlbri"]
 
 [ext_resource type="Script" uid="uid://dhexchyqwh5a2" path="res://Player/playerSpawner.gd" id="1_6646i"]
 [ext_resource type="Script" uid="uid://dcuiowus0yb5w" path="res://AsteroidSpawner/AsteroidSpawner.gd" id="2_wuaen"]
@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://caxvwlww7aapp" path="res://ScoreManager.gd" id="5_wuaen"]
 [ext_resource type="Script" uid="uid://bji2r7r5g3u7t" path="res://MainScene/DamageFlash.gd" id="6_qt16b"]
 [ext_resource type="Script" uid="uid://b8in2y54ytd7h" path="res://MainScene/PauseController.gd" id="7_3dbgo"]
+[ext_resource type="Texture2D" uid="uid://w53sgerwogmt" path="res://Player/Icons/Heart-removebg-preview.png" id="7_eo7vj"]
+[ext_resource type="Script" uid="uid://bdjj2drm52cx" path="res://HeartsUI.gd" id="7_smvwh"]
 [ext_resource type="PackedScene" uid="uid://qb434a0p45f5" path="res://PauseMenu.tscn" id="8_8xi1u"]
 
 [node name="MainScene" type="Node2D"]
@@ -45,6 +47,49 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(1.2700006, 0, 0, 0)
 script = ExtResource("6_qt16b")
+
+[node name="HeartsUI" type="HBoxContainer" parent="CanvasLayer"]
+offset_left = 12.0
+offset_top = 42.0
+offset_right = 286.0
+offset_bottom = 92.0
+theme_override_constants/separation = 6
+script = ExtResource("7_smvwh")
+
+[node name="Heart1" type="TextureRect" parent="CanvasLayer/HeartsUI"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("7_eo7vj")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Heart2" type="TextureRect" parent="CanvasLayer/HeartsUI"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("7_eo7vj")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Heart3" type="TextureRect" parent="CanvasLayer/HeartsUI"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("7_eo7vj")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Heart4" type="TextureRect" parent="CanvasLayer/HeartsUI"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("7_eo7vj")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Heart5" type="TextureRect" parent="CanvasLayer/HeartsUI"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("7_eo7vj")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="PauseController" type="Node" parent="."]
 process_mode = 3
