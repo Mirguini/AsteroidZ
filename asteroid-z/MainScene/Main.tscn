@@ -47,6 +47,7 @@ color = Color(1.2700006, 0, 0, 0)
 script = ExtResource("6_qt16b")
 
 [node name="PauseController" type="Node" parent="."]
+process_mode = 3
 script = ExtResource("7_3dbgo")
 pause_menu_path = NodePath("../PauseMenu")
 
