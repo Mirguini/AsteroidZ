@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://caxvwlww7aapp" path="res://MainScene/ScoreManager.gd" id="5_wuaen"]
 [ext_resource type="Script" uid="uid://bji2r7r5g3u7t" path="res://MainScene/DamageFlash.gd" id="6_qt16b"]
 [ext_resource type="Shader" uid="uid://cmj1rgtktsyo6" path="res://MainScene/starsShader.gdshader" id="7_3dbgo"]
-[ext_resource type="Script" uid="uid://cxy8rtunxwj54" path="res://MainScene/background.gd" id="7_8xi1u"]
+[ext_resource type="Script" path="res://MainScene/background.gd" id="7_8xi1u"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8xi1u"]
 shader = ExtResource("7_3dbgo")

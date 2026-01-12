@@ -1,5 +1,11 @@
 extends CharacterBody2D
 
+signal health_changed(current: int, max: int)
+signal died
+
+@export var max_health: int = 5
+var health: int
+
 @onready var shoot_sfx: AudioStreamPlayer2D = $ShootSfx
 @onready var pickup_sfx: AudioStreamPlayer2D = $PickupSfx
 
@@ -18,9 +24,15 @@ var score_multiplier := 1
 
 var _can_take_hit := true
 var aimDir := Vector2.RIGHT
+
 var canShoot := true
 
+
+
 func _ready() -> void:
+	add_to_group("player")
+	health = max_health
+	emit_signal("health_changed", health, max_health)
 	if shield_sprite != null:
 		shield_sprite.visible = false
 
@@ -48,6 +60,7 @@ func _snap_to_cardinal(v: Vector2) -> Vector2:
 	else:
 		return Vector2.DOWN if v.y > 0.0 else Vector2.UP
 
+
 func _apply_rotation_from_aim(dir: Vector2) -> void:
 	if dir == Vector2.RIGHT:
 		rotation = deg_to_rad(90)
@@ -57,6 +70,7 @@ func _apply_rotation_from_aim(dir: Vector2) -> void:
 		rotation = 0.0
 	else:
 		rotation = deg_to_rad(180)
+
 
 func tryShoot() -> void:
 	if not canShoot:
@@ -82,7 +96,6 @@ func tryShoot() -> void:
 func _shoot_single() -> void:
 	var b = bullet.instantiate()
 	b.global_position = muzzle.global_position
-
 	if "direction" in b:
 		b.direction = aimDir
 
@@ -104,6 +117,9 @@ func _spawn_bullet(dir: Vector2) -> void:
 		b.direction = dir.normalized()
 
 	get_parent().add_child(b)
+	await get_tree().create_timer(fireCd).timeout
+	canShoot = true
+
 
 func take_hit() -> void:
 	if has_powerup(PowerUpTypes.Type.SHIELD):
@@ -118,6 +134,17 @@ func take_hit() -> void:
 
 	_can_take_hit = false
 
+	# Restar vida y avisar al HUD
+	health = max(0, health - 1)
+	emit_signal("health_changed", health, max_health)
+
+	# Si muere, reinicia (o aquí puedes poner Game Over)
+	if health <= 0:
+		emit_signal("died")
+		get_tree().reload_current_scene()
+		return
+
+	# Efectos de daño (lo que ya tenías)
 	var flash := get_tree().get_first_node_in_group("damage_flash")
 	if flash != null:
 		flash.call("flash")
