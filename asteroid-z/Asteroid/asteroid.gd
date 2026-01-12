@@ -1,13 +1,11 @@
 extends CharacterBody2D
 signal destroyed(points: int)
 
+@export var offscreen_despawn_time := 3.0
 @export var hit_cd := 0.35
-
 @export var score_value: int = 100
-
 @export var speed: float = 200.0
 @export var rotation_speed: float = 2.5
-
 @export var can_split: bool = true
 @export var asteroid_scene: PackedScene
 @export var child_scale: float = 0.65
@@ -15,6 +13,7 @@ signal destroyed(points: int)
 @export var split_angle_spread: float = 0.6
 @export var spawn_separation: float = 10.0
 
+var _offscreen_timer := 0.0
 var direction: Vector2 = Vector2.RIGHT
 var _rng := RandomNumberGenerator.new()
 
@@ -33,12 +32,26 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	rotation += rotation_speed * delta
 
-func _process(_delta: float) -> void:
-	var r := get_viewport_rect()
-	var margin := 250.0
-	if global_position.x < -margin or global_position.x > r.size.x + margin \
-	or global_position.y < -margin or global_position.y > r.size.y + margin:
-		queue_free()
+func _process(delta: float) -> void:
+	var cam := get_viewport().get_camera_2d()
+	if cam == null:
+		return
+
+	var viewport_size := get_viewport_rect().size
+	var zoom := cam.zoom
+	var half := (viewport_size * 0.5) / zoom
+	var center := cam.get_screen_center_position()
+	var rect := Rect2(center - half, half * 2.0)
+
+	rect = rect.grow(200.0)
+
+	if rect.has_point(global_position):
+		_offscreen_timer = 0.0
+	else:
+		_offscreen_timer += delta
+		if _offscreen_timer >= offscreen_despawn_time:
+			queue_free()
+
 
 func destroy() -> void:
 	call_deferred("_destroy_deferred")
