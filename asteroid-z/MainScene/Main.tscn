@@ -33,3 +33,11 @@ offset_left = 21.0
 offset_top = 23.0
 offset_right = 173.0
 offset_bottom = 100.0
+
+[node name="DamageFlash" type="ColorRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1.2700006, 0, 0, 0)

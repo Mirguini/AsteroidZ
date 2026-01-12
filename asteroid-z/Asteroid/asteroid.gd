@@ -1,6 +1,8 @@
 extends CharacterBody2D
 signal destroyed(points: int)
 
+@export var hit_cd := 0.35
+
 @export var score_value: int = 100
 
 @export var speed: float = 200.0
@@ -79,3 +81,8 @@ func _split_into_two() -> void:
 			child.call_deferred("set_direction", dirs[i])
 		else:
 			child.set_deferred("direction", dirs[i])
+			
+func _on_hitbox_body_entered(body: Node2D) -> void:
+	if body.has_method("take_hit"):
+		body.call_deferred("take_hit")
+		set_direction((global_position - body.global_position).normalized())
