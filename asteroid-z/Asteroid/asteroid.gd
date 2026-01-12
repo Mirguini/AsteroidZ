@@ -12,6 +12,13 @@ signal destroyed(points: int)
 @export var child_speed_multiplier: float = 1.2
 @export var split_angle_spread: float = 0.6
 @export var spawn_separation: float = 10.0
+@export var explosion_sfx_scene: PackedScene
+
+@export var asteroid_bounce_cd := 0.08
+@export var bounce_separation := 2.0
+var _bounce_timer := 0.0
+
+
 
 var _offscreen_timer := 0.0
 var direction: Vector2 = Vector2.RIGHT
@@ -28,9 +35,26 @@ func set_direction(dir: Vector2) -> void:
 		direction = dir.normalized()
 
 func _physics_process(delta: float) -> void:
+	_bounce_timer = max(0.0, _bounce_timer - delta)
+
 	velocity = direction * speed
 	move_and_slide()
 	rotation += rotation_speed * delta
+
+	if _bounce_timer > 0.0:
+		return
+
+	var count := get_slide_collision_count()
+	for i in count:
+		var c := get_slide_collision(i)
+		var other := c.get_collider()
+		if other != null and other.is_in_group("asteroids"):
+			var n := c.get_normal()
+			bounce_from(n)
+			if other.has_method("bounce_from"):
+				other.call_deferred("bounce_from", -n)
+			break
+
 
 func _process(delta: float) -> void:
 	var cam := get_viewport().get_camera_2d()
@@ -58,9 +82,24 @@ func destroy() -> void:
 
 func _destroy_deferred() -> void:
 	emit_signal("destroyed", score_value)
+
+	if explosion_sfx_scene != null:
+		var sfx := explosion_sfx_scene.instantiate()
+		get_parent().add_child(sfx)
+		sfx.global_position = global_position
+
 	if can_split:
 		_split_into_two()
+
 	queue_free()
+
+func bounce_from(normal: Vector2) -> void:
+	if _bounce_timer > 0.0:
+		return
+	_bounce_timer = asteroid_bounce_cd
+	set_direction(direction.bounce(normal).normalized())
+	global_position += normal * bounce_separation
+
 
 
 

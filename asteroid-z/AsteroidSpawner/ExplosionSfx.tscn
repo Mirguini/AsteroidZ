@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://dwhi1kbnxjkc1"]
+
+[ext_resource type="AudioStream" uid="uid://bwtwgukkadcmm" path="res://AsteroidSpawner/explosion.wav" id="1_l1ehc"]
+[ext_resource type="Script" uid="uid://dtbppljj8mob5" path="res://AsteroidSpawner/ExplosionSfx.gd" id="2_3op3x"]
+
+[node name="ExplosionSfx" type="AudioStreamPlayer2D"]
+stream = ExtResource("1_l1ehc")
+script = ExtResource("2_3op3x")
