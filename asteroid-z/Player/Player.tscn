@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://t2d37sioy1wh"]
+[gd_scene load_steps=7 format=3 uid="uid://t2d37sioy1wh"]
 
 [ext_resource type="Script" uid="uid://cu7aa85jadpi3" path="res://Player/playerController.gd" id="1_q3lat"]
 [ext_resource type="PackedScene" uid="uid://pam55yfjpc2" path="res://Player/Bullet/Bullet.tscn" id="2_ddoul"]
 [ext_resource type="Texture2D" uid="uid://u7im126gtey" path="res://Player/nau.webp" id="2_tok1r"]
 [ext_resource type="AudioStream" uid="uid://csecji2ub10p5" path="res://Player/Bullet/laserShoot.wav" id="4_ddoul"]
+[ext_resource type="Script" uid="uid://b2rk057j3hedh" path="res://Player/CameraShake.gd" id="5_8g4oa"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ddoul"]
 size = Vector2(92, 39)
@@ -30,3 +31,4 @@ gizmo_extents = 0.0
 stream = ExtResource("4_ddoul")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("5_8g4oa")
